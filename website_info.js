@@ -13,13 +13,6 @@ function websiteInfoRender(domainInfo, userId, renderTarget) {
 
   const domainName = domainInfo.identDomain;
 
-  const colorHash = new ColorHash({ hash: str => CRC32.str(str) >>> 0 });
-  const domainBgColor = colorHash.hex(userId + domainName);
-
-  const domainEmoji = strToIdentityEmoji(userId + domainName, CRC32);
-
-  const resourceName = domainInfo.isLocalFile ? 'file' : 'website';
-
   const warningCount = Object.keys(domainInfo.warnings).length;
 
   const t = escapeHtml;
@@ -28,27 +21,16 @@ function websiteInfoRender(domainInfo, userId, renderTarget) {
   const reportUrl = 'https://anti-phishing.zecops.com/report';
 
   const content = `
-    ${warningCount === 0 ? '' : `
+    ${(warningCount === 0) ? '' : `
       <div class="zecops-anti-phishing-extension-tooltip-heading">
-        ⚠️ ${warningCount > 1 ? 'Warnings' : 'Warning'} ⚠️
+        ⚠️ Warning: Times you've visited this website: ${domainInfo.visitCount}
       </div>
       <div class="zecops-anti-phishing-extension-tooltip-warnings">
         ${!domainInfo.warnings.smallVisitCount ? '' : `
           <div>
-            ${warningCount > 1 ? '• ' : ''}
-            ${domainInfo.visitCount === 0 ? `
-              This is the first time that this ${resourceName} is visited on this device.
-            ` : domainInfo.visitCount === 1 ? `
-              This ${resourceName} was visited only once on this device.
-            ` : `
-              This ${resourceName} was visited only ${domainInfo.visitCount} times on this device.
-            `}
-            ${domainInfo.isLocalFile ? `
-              Make sure that you got the file from a trusted contact,
-              and beware of entering sensitive information.
-            ` : `
-              Carefully verify the address in the address bar.
-            `}
+            If you think you have been on this website before, this one might be fake.<br>
+            If you enter your credentials, they could be stolen.<br>
+            <button onclick="history.back()">Go back (recommended)</button>
           </div>
         `}
         ${!domainInfo.warnings.unicodeDomain ? '' : `
@@ -86,19 +68,10 @@ function websiteInfoRender(domainInfo, userId, renderTarget) {
         <span class="zecops-anti-phishing-extension-tooltip-green">
           ✔
         </span>
-        <strong>${t(domainName)}</strong> is a well known website
+        <strong>${t(domainName)}</strong> is a well known website.
       </div>
       <hr>
     `}
-    <div>
-      <div class="zecops-anti-phishing-extension-tooltip-domain"
-        style="background-color: ${domainBgColor};">
-        ${t(domainName)}
-      </div>
-      <div class="zecops-anti-phishing-extension-tooltip-domain-emoji">
-        ${domainEmoji}
-      </div>
-    </div>
     <div>
       <strong>Times visited:</strong>
       <span class="zecops-anti-phishing-extension-tooltip-visit-count">
@@ -141,54 +114,12 @@ function websiteInfoRender(domainInfo, userId, renderTarget) {
   return contentWrapper(content);
 }
 
-function misleadingLinkInfoRender(misleadingLinkInfo) {
-  const { linkDomain, textDomain } = misleadingLinkInfo;
-
-  const t = escapeHtml;
-
-  const content = `
-    <div class="zecops-anti-phishing-extension-tooltip-heading">
-      ⚠️ Warning ⚠️
-    </div>
-    <div class="zecops-anti-phishing-extension-tooltip-warnings">
-      <div>
-        The link is misleading. The text shows
-        <span class="zecops-anti-phishing-extension-tooltip-red">${t(textDomain)}</span>,
-        while the actual link leads to
-        <span class="zecops-anti-phishing-extension-tooltip-red">${t(linkDomain)}</span>.
-      </div>
-    </div>
-  `;
-
-  return contentWrapper(content);
-}
-
 function contentWrapper(content) {
   return `
     <div class="zecops-anti-phishing-extension-tooltip">
-      <div class="zecops-anti-phishing-extension-tooltip-heading">
-        ZecOps <span style="white-space: nowrap;">Anti-Phishing</span>
-      </div>
-      <hr>
       ${content}
     </div>
   `;
-}
-
-function strToIdentityEmoji(str, CRC32) {
-  const emoji = [
-    '💎','🏄','🚴','🏆','⚽','🏀','🎳','🏓',
-    '🎵','🎧','🎸','🎹','📺','📷','🍇','🍉','🍋','🍌','🍍','🍎','🍒','🍓',
-    '🥝','🍅','🥑','🍆','🥕','🌽','🧀','🍕','🌭','🎂','🍫','☕','🍺',
-    '🐵','🐶','🐈','🐎','🐷','🐘','🐰','🐊','🐢','🐍','🌸','🌲','🌵','⚡',
-    '💣','🚦','🎲','💡','🔑','💰','🌍','🌞','☔','⌚','🎈',
-  ];
-
-  // Unsigned integer:
-  // https://github.com/SheetJS/js-crc32/issues/10#issuecomment-349891951
-  const hash = CRC32.str(str) >>> 0;
-
-  return emoji[hash % emoji.length];
 }
 
 // https://fontawesome.com/icons/question-circle?style=regular

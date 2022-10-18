@@ -1,5 +1,4 @@
 'use strict';
-
 /* global browser, tippy, getUserId, websiteInfoRender, misleadingLinkInfoRender */
 
 startExtension();
@@ -19,6 +18,12 @@ async function startExtension() {
     new RegExp(options.excludedWebsitesRegex, 'i').test(domainInfo.identDomain)) {
     return;
   }
+
+/*  //targetSelectors are set to all inputs or passwords depending on the extensions settings.
+  const targetSelectors = {
+    input: 'input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit])',
+    password: 'input[type=password]'
+  };*/
 
   const targetSelectors = {
     input: 'input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit])',
@@ -44,17 +49,6 @@ async function startExtension() {
     }
   }
 
-  let warnAboutMisleadingLinks;
-  if (options && options.misleadingLinks !== undefined) {
-    warnAboutMisleadingLinks = options.misleadingLinks;
-  } else {
-    warnAboutMisleadingLinks = true;
-  }
-
-  if (!target && !warnAboutMisleadingLinks) {
-    return;
-  }
-
   // Wait for document.body to become available.
   await new Promise(resolve => {
     (function documentBodyReadyPromise() {
@@ -71,25 +65,23 @@ async function startExtension() {
     const content = websiteInfoRender(domainInfo, userId, 'tooltip');
     setPhishingTooltip(target, content);
   }
-
-  if (warnAboutMisleadingLinks) {
-    setMisleadingLinksTooltip();
-  }
 }
 
 function setPhishingTooltip(target, content) {
   let delegateInstance = null;
   let initialFocusTippyInstance = null;
 
+  // tippy library created the speech bubble tooltip
   const tippyOptions = {
     content,
     allowHTML: true,
     trigger: 'focus',
-    placement: 'bottom',
+    placement: 'right-end',
     zIndex: 2147483647, // maximum possible value
     interactive: true,
     appendTo: document.body,
     hideOnClick: false,
+    theme: 'light-border',
     onClickOutside: instance => {
       return instance.hide()
     },
@@ -118,49 +110,4 @@ function setPhishingTooltip(target, content) {
       showOnCreate: true
     });
   }
-}
-
-function setMisleadingLinksTooltip() {
-  const handledElements = new WeakSet();
-
-  document.body.addEventListener('mouseover', async event => {
-    const target = event.target;
-    if (target.tagName.toLowerCase() !== 'a') {
-      return;
-    }
-
-    if (handledElements.has(target)) {
-      return;
-    }
-
-    handledElements.add(target);
-
-    const link = target.getAttribute('href');
-    if (!link || (!link.startsWith('http://') && !link.startsWith('https://'))) {
-      return;
-    }
-
-    const text = target.textContent;
-    if (!text.match(/^(https?:\/\/)?[-a-z0-9]+(\.[-a-z0-9]+)*(\/|$)/i)) {
-      return;
-    }
-
-    const misleadingLinkInfo = await browser.runtime.sendMessage({
-      type: 'misleadingLinkInfo',
-      link,
-      text
-    });
-
-    if (misleadingLinkInfo) {
-      tippy(target, {
-        content: misleadingLinkInfoRender(misleadingLinkInfo),
-        allowHTML: true,
-        trigger: 'mouseenter',
-        placement: 'bottom',
-        zIndex: 2147483647, // maximum possible value
-        showOnCreate: target.matches(':hover'),
-        //onHide: () => false,
-      });
-    }
-  }, false);
 }

@@ -1,12 +1,7 @@
 {
-  "name": "ZecOps Anti-Phishing Extension",
-  "version": "1.0.5",
+  "name": "Anti-Phishing Extension",
+  "version": "1.0.0",
   "description": "Augment the web with indicators that help detect phishing attempts",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "anti-phishing-extension@zecops.com"
-    }
-  },
   "content_scripts": [
     {
       "css": [
@@ -65,7 +60,6 @@
   "options_ui": {
     "page": "options/options.html",
     "browser_style": true,
-    "chrome_style": true,
     "open_in_tab": false
   },
   "icons": {
