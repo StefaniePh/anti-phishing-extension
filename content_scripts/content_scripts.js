@@ -65,9 +65,24 @@ async function startExtension() {
     const content = websiteInfoRender(domainInfo, userId, 'tooltip');
     setPhishingTooltip(target, content);
   }
+
+ // Wait for tippy to load.
+  await new Promise(resolve => {
+    (function documentBodyReadyPromise() {
+      if (!document.getElementById("learn-more-button") || !document.getElementById("enable-button")) {
+        setTimeout(documentBodyReadyPromise, 10);
+        return;
+      }
+
+      resolve();
+    })();
+  });
+
+  document.getElementById("learn-more-button").addEventListener("click", toggleText, false);
+  document.getElementById("enable-button").addEventListener("click", enableLogin, false);
 }
 
-function setPhishingTooltip(target, content) {
+async function setPhishingTooltip(target, content) {
   let delegateInstance = null;
   let initialFocusTippyInstance = null;
 

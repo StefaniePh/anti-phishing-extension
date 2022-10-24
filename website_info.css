@@ -1,26 +1,50 @@
 
 div.zecops-anti-phishing-extension-tooltip button {
-    background-color: #0060df;
+    background-color: #bbb;
     border: none;
-    color: white;
-    padding: 8px 16px;
+    color: #111;
+    padding: 8px 12px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 0.8rem;
 }
 
+#back-button {
+    color: white;
+    background-color: #5c5cd4;
+}
+
+#enable-button {
+    float: right;
+    text-align: right;
+    justify-content: flex-end;
+}
+
+#learn-more-text {
+    display: none;
+}
+
+#learn-more-button {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 div.zecops-anti-phishing-extension-tooltip {
+    font-size: 0.8rem;
     direction: ltr;
     text-align: left;
 }
 
 div.zecops-anti-phishing-extension-tooltip * {
-    color: white;
+    color: #111;
 }
 
 div.zecops-anti-phishing-extension-tooltip a {
-    color: white;
+    color: #111;
 }
 
 div.zecops-anti-phishing-extension-tooltip hr {
@@ -32,25 +56,9 @@ div.zecops-anti-phishing-extension-tooltip hr {
 
 div.zecops-anti-phishing-extension-tooltip
     .zecops-anti-phishing-extension-tooltip-heading {
-    font-size: 1.2rem;
-    font-weight: 500;
+    font-size: 1rem;
+    /**font-weight: 500;*/
     margin: 16px 8px;
-}
-
-div.zecops-anti-phishing-extension-tooltip
-    .zecops-anti-phishing-extension-tooltip-green {
-    font-size: 1.2rem;
-    font-weight: 500;
-    line-height: 0;
-    color: #4f4;
-}
-
-div.zecops-anti-phishing-extension-tooltip
-    .zecops-anti-phishing-extension-tooltip-red {
-    font-size: 1.2rem;
-    font-weight: 500;
-    line-height: 0;
-    color: #f44;
 }
 
 div.zecops-anti-phishing-extension-tooltip
@@ -58,12 +66,7 @@ div.zecops-anti-phishing-extension-tooltip
     margin: 16px 8px;
 }
 
-div.zecops-anti-phishing-extension-tooltip
-    .zecops-anti-phishing-extension-tooltip-domain-emoji {
-    font-size: 72px;
-}
-
-div.zecops-anti-phishing-extension-tooltip
+/*div.zecops-anti-phishing-extension-tooltip
     .zecops-anti-phishing-extension-tooltip-domain {
     display: inline-block;
     word-break: break-all;
@@ -91,4 +94,4 @@ div.zecops-anti-phishing-extension-tooltip
 div.zecops-anti-phishing-extension-tooltip
     .zecops-anti-phishing-extension-tooltip-actions-icon {
     margin-bottom: 4px;
-}
+}*/
